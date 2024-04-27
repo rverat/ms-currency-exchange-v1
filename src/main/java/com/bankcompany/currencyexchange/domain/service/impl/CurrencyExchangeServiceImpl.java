@@ -40,7 +40,8 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
                     return exchangeDAO.saveCurrencyExchange(currencyExchange)
                             .flatMap(this::generateResponse)
                             .onErrorResume(throwable -> {
-                                log.error("Error fetching exchange rate cause: {} error message: {}", throwable.getCause(), throwable.getMessage());
+                                log.error("Error fetching exchange rate cause: {} error message: {}",
+                                        throwable.getCause(), throwable.getMessage());
                                 return Mono.error(
                                         new ServiceUnavailableException("Failed to retrieve currency exchange"));
                             });
@@ -52,8 +53,10 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
         return exchangeDAO.findAllCurrencyExchange()
                 .flatMap(this::generateResponse)
                 .onErrorResume(throwable -> {
-                    log.error("Error fetching exchange rate cause: {} error message: {}", throwable.getCause(), throwable.getMessage());
-                    return Mono.error(new ServiceUnavailableException("Failed to retrieve currency exchange transactions"));
+                    log.error("Error fetching exchange rate cause: {} error message: {}",
+                            throwable.getCause(), throwable.getMessage());
+                    return Mono.error(
+                            new ServiceUnavailableException("Failed to retrieve currency exchange transactions"));
                 });
 
     }

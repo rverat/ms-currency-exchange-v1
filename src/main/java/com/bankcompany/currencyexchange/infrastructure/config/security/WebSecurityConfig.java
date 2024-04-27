@@ -38,7 +38,7 @@ public class WebSecurityConfig {
                         .pathMatchers(PERMITTED_URL)
                         .permitAll()
                         .anyExchange()
-                        .permitAll()
+                        .authenticated()
                 )
                 .build();
     }

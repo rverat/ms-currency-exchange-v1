@@ -28,7 +28,7 @@ public class AuthenticationFilter implements WebFilter {
                 .defaultIfEmpty(AuthenticationTokenData.builder().build())
                 .flatMap(token -> {
                     if (token.getUserAudience() != null) {
-                        return Mono.error(new NotAuthorizedException("User not authorized"));
+                        return chain.filter(exchange);
                     }
                     return chain.filter(exchange);
                 });
