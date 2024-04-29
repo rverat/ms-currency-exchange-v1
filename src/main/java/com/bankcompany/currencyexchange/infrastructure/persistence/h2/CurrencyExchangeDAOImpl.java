@@ -1,6 +1,6 @@
 package com.bankcompany.currencyexchange.infrastructure.persistence.h2;
 
-import com.bankcompany.currencyexchange.application.dao.CurrencyExchangeDAO;
+import com.bankcompany.currencyexchange.application.repository.CurrencyExchangeDAO;
 import com.bankcompany.currencyexchange.domain.model.CurrencyExchange;
 import com.bankcompany.currencyexchange.infrastructure.persistence.h2.mapper.ExchangeRateMapper;
 import com.bankcompany.currencyexchange.infrastructure.persistence.h2.repository.CurrencyExchangeRepository;

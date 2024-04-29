@@ -1,7 +1,7 @@
 package com.bankcompany.currencyexchange.domain.service.impl;
 
-import com.bankcompany.currencyexchange.application.client.ExchangeRateClient;
-import com.bankcompany.currencyexchange.application.dao.CurrencyExchangeDAO;
+import com.bankcompany.currencyexchange.application.external_repository.ExchangeRateClientRepository;
+import com.bankcompany.currencyexchange.application.repository.CurrencyExchangeDAO;
 import com.bankcompany.currencyexchange.domain.model.CurrencyExchange;
 import com.bankcompany.currencyexchange.infrastructure.exception.types.ServiceUnavailableException;
 import com.bankcompany.currencyexchange.interfaces.dto.CurrencyExchangeDto;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 class CurrencyExchangeServiceImplTest {
 
     @Mock
-    private ExchangeRateClient exchangeRateClient;
+    private ExchangeRateClientRepository exchangeRateClient;
 
     @Mock
     private CurrencyExchangeDAO exchangeDAO;
@@ -38,14 +38,19 @@ class CurrencyExchangeServiceImplTest {
 
         var exchangeRate = BigDecimal.valueOf(0.37);
         var dateTime = LocalDateTime.now();
-        var requestDto = new ExchangeRateRequestDto(1, BigDecimal.valueOf(100.54), "USD", "PEN");
-        var currencyExchange = new CurrencyExchange(1, 1, BigDecimal.valueOf(100.54), BigDecimal.valueOf(37.40),
+        var requestDto = new ExchangeRateRequestDto(1, BigDecimal.valueOf(100.54),
+                "USD", "PEN");
+        var currencyExchange = new CurrencyExchange(1, 1,
+                BigDecimal.valueOf(100.54), BigDecimal.valueOf(37.40),
                 "USD", "PEN", exchangeRate, dateTime);
-        var expectedDto = new CurrencyExchangeDto(1, 1, BigDecimal.valueOf(100.54), BigDecimal.valueOf(37.40),
+        var expectedDto = new CurrencyExchangeDto(1, 1,
+                BigDecimal.valueOf(100.54), BigDecimal.valueOf(37.40),
                 "USD", "PEN", exchangeRate, dateTime);
 
-        when(exchangeRateClient.getExchangeRate("USD", "PEN")).thenReturn(Mono.just(exchangeRate));
-        when(exchangeDAO.saveCurrencyExchange(any())).thenReturn(Mono.just(currencyExchange));
+        when(exchangeRateClient.getExchangeRate("USD", "PEN"))
+                .thenReturn(Mono.just(exchangeRate));
+        when(exchangeDAO.saveCurrencyExchange(any()))
+                .thenReturn(Mono.just(currencyExchange));
 
         StepVerifier.create(service.applyExchangeRate(requestDto))
                 .expectNext(expectedDto)
@@ -55,9 +60,11 @@ class CurrencyExchangeServiceImplTest {
     @Test
     void testApplyExchangeRate_ServiceUnavailable() {
 
-        var requestDto = new ExchangeRateRequestDto(1, BigDecimal.valueOf(100.54), "USD", "PEN");
+        var requestDto = new ExchangeRateRequestDto(1, BigDecimal.valueOf(100.54),
+                "USD", "PEN");
 
-        when(exchangeRateClient.getExchangeRate("USD", "PEN")).thenReturn(Mono.error(new ServiceUnavailableException("Service unavailable")));
+        when(exchangeRateClient.getExchangeRate("USD", "PEN"))
+                .thenReturn(Mono.error(new ServiceUnavailableException("Service unavailable")));
 
         StepVerifier.create(service.applyExchangeRate(requestDto))
                 .expectError(ServiceUnavailableException.class)
@@ -68,12 +75,15 @@ class CurrencyExchangeServiceImplTest {
     void testGetAllMovementExchangeRate_Success() {
 
         var dateTime = LocalDateTime.now();
-        var currencyExchange = new CurrencyExchange(1, 1, BigDecimal.valueOf(100.54), BigDecimal.valueOf(37.40),
+        var currencyExchange = new CurrencyExchange(1, 1,
+                BigDecimal.valueOf(100.54), BigDecimal.valueOf(37.40),
                 "USD", "PEN", BigDecimal.valueOf(0.37), dateTime);
-        var expectedDto = new CurrencyExchangeDto(1, 1, BigDecimal.valueOf(100.54), BigDecimal.valueOf(37.40),
+        var expectedDto = new CurrencyExchangeDto(1, 1,
+                BigDecimal.valueOf(100.54), BigDecimal.valueOf(37.40),
                 "USD", "PEN", BigDecimal.valueOf(0.37), dateTime);
 
-        when(exchangeDAO.findAllCurrencyExchange()).thenReturn(Flux.just(currencyExchange));
+        when(exchangeDAO.findAllCurrencyExchange())
+                .thenReturn(Flux.just(currencyExchange));
 
         StepVerifier.create(service.getAllMovementExchangeRate())
                 .expectNext(expectedDto)
@@ -84,7 +94,8 @@ class CurrencyExchangeServiceImplTest {
     @Test
     void testGetAllMovementExchangeRate_ServiceUnavailable() {
 
-        when(exchangeDAO.findAllCurrencyExchange()).thenReturn(Flux.error(new RuntimeException("Service unavailable")));
+        when(exchangeDAO.findAllCurrencyExchange())
+                .thenReturn(Flux.error(new RuntimeException("Service unavailable")));
 
         StepVerifier.create(service.getAllMovementExchangeRate())
                 .expectError(ServiceUnavailableException.class)

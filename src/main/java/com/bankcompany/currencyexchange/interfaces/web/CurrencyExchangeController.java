@@ -9,21 +9,22 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-@RestController
-@RequestMapping("/currency-conversion")
+
+@RequestMapping("/api/v1/currency-exchange")
 @RequiredArgsConstructor
+@RestController
 @Slf4j
-public class CurrencyConversionController {
+public class CurrencyExchangeController {
 
     private final CurrencyExchangeService exchangeService;
 
-    @PostMapping("applyConvertion")
+    @PostMapping("/apply")
     public Mono<CurrencyExchangeDto> convertCurrency(@RequestBody ExchangeRateRequestDto requestDto) {
 
         return exchangeService.applyExchangeRate(requestDto);
     }
 
-    @GetMapping("/convertions")
+    @GetMapping("/getAll")
     public Flux<CurrencyExchangeDto> getAllTransaction() {
 
         return exchangeService.getAllMovementExchangeRate();

@@ -1,7 +1,7 @@
 package com.bankcompany.currencyexchange.domain.service.impl;
 
-import com.bankcompany.currencyexchange.application.client.ExchangeRateClient;
-import com.bankcompany.currencyexchange.application.dao.CurrencyExchangeDAO;
+import com.bankcompany.currencyexchange.application.external_repository.ExchangeRateClientRepository;
+import com.bankcompany.currencyexchange.application.repository.CurrencyExchangeDAO;
 import com.bankcompany.currencyexchange.domain.model.CurrencyExchange;
 import com.bankcompany.currencyexchange.domain.service.CurrencyExchangeService;
 import com.bankcompany.currencyexchange.infrastructure.exception.types.ServiceUnavailableException;
@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Service
 public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
 
-    private final ExchangeRateClient exchangeRateClient;
+    private final ExchangeRateClientRepository exchangeRateClient;
     private final CurrencyExchangeDAO exchangeDAO;
 
     @Override
@@ -56,7 +56,8 @@ public class CurrencyExchangeServiceImpl implements CurrencyExchangeService {
                     log.error("Error fetching exchange rate cause: {} error message: {}",
                             throwable.getCause(), throwable.getMessage());
                     return Mono.error(
-                            new ServiceUnavailableException("Failed to retrieve currency exchange transactions"));
+                            new ServiceUnavailableException(
+                                    "Failed to retrieve currency exchange transactions"));
                 });
 
     }

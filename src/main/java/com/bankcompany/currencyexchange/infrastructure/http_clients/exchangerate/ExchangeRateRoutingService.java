@@ -1,10 +1,11 @@
 package com.bankcompany.currencyexchange.infrastructure.http_clients.exchangerate;
 
-import com.bankcompany.currencyexchange.application.client.ExchangeRateClient;
+import com.bankcompany.currencyexchange.application.external_repository.ExchangeRateClientRepository;
 import com.bankcompany.currencyexchange.infrastructure.exception.types.NotFoundException;
 import com.bankcompany.currencyexchange.infrastructure.exception.types.ServiceUnavailableException;
 import com.bankcompany.currencyexchange.infrastructure.http_clients.exchangerate.model.ExchangeRateApiResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -13,8 +14,10 @@ import java.math.BigDecimal;
 
 @Slf4j
 @Service
-public class ExchangeRateRoutingService implements ExchangeRateClient {
+public class ExchangeRateRoutingService implements ExchangeRateClientRepository {
 
+    private static final String EXCHANGE_RATE_API_URL= "https://open.er-api.com/v6";
+    private static final String EXCHANGE_RATE_API_PATH = "/latest/{baseCode}";
 
     private final WebClient.Builder webClientBuilder;
 
@@ -24,9 +27,9 @@ public class ExchangeRateRoutingService implements ExchangeRateClient {
 
     @Override
     public Mono<BigDecimal> getExchangeRate(String originalCurrency, String targetCurrency) {
-        WebClient webClient = webClientBuilder.baseUrl("https://open.er-api.com/v6").build();
+        WebClient webClient = webClientBuilder.baseUrl(EXCHANGE_RATE_API_URL).build();
         return webClient.get()
-                .uri("/latest/{baseCode}", originalCurrency)
+                .uri(EXCHANGE_RATE_API_PATH, originalCurrency)
                 .retrieve()
                 .bodyToMono(ExchangeRateApiResponse.class)
                 .switchIfEmpty(Mono.error(new NotFoundException("Not found exchange rates")))

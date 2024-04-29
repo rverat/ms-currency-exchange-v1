@@ -1,0 +1,21 @@
+server:
+  port: 9006
+
+spring:
+  application:
+    name: ms-currency-exchange-v1
+  r2dbc:
+    url: r2dbc:h2:mem:///currency-exchange
+    # Uncomment these lines if using H2 file based database
+    # url: r2dbc:h2:file:///./exchange_rate
+    # name: sa
+    # password: (leave empty for in-memory H2)
+  logging:
+    config: classpath:logback-spring.xml
+
+# Cors Configuration (remains the same)
+  cors-properties:
+    cors:
+      allowed-methods: GET,POST
+      allowed-origins: http://localhost:4200
+      allowed-headers: Authorization,content-type

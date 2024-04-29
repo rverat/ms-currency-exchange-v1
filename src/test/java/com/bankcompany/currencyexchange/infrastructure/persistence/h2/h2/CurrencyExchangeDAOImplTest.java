@@ -34,20 +34,30 @@ class CurrencyExchangeDAOImplTest {
     @Test
     void testFindAllCurrencyExchange() {
 
-        var entity1 = new CurrencyExchangeEntity(1, 1, BigDecimal.valueOf(100), BigDecimal.valueOf(30),
+        var entity1 = new CurrencyExchangeEntity(1, 1,
+                BigDecimal.valueOf(100), BigDecimal.valueOf(30),
+                "USD", "PEN",
+                BigDecimal.valueOf(0.32), LocalDateTime.now());
+        var entity2 = new CurrencyExchangeEntity(2, 1,
+                BigDecimal.valueOf(100), BigDecimal.valueOf(30),
+                "USD", "PEN",
+                BigDecimal.valueOf(0.32), LocalDateTime.now());
+        var currencyExchange1 = new CurrencyExchange(1, 1,
+                BigDecimal.valueOf(100), BigDecimal.valueOf(30),
                 "USD", "PEN", BigDecimal.valueOf(0.32), LocalDateTime.now());
-        var entity2 = new CurrencyExchangeEntity(2, 1, BigDecimal.valueOf(100), BigDecimal.valueOf(30),
-                "USD", "PEN", BigDecimal.valueOf(0.32), LocalDateTime.now());
-        var currencyExchange1 = new CurrencyExchange(1, 1, BigDecimal.valueOf(100), BigDecimal.valueOf(30),
-                "USD", "PEN", BigDecimal.valueOf(0.32), LocalDateTime.now());
-        var currencyExchange2 = new CurrencyExchange(2, 1, BigDecimal.valueOf(100), BigDecimal.valueOf(30),
-                "USD", "PEN", BigDecimal.valueOf(0.32), LocalDateTime.now());
+        var currencyExchange2 = new CurrencyExchange(2, 1,
+                BigDecimal.valueOf(100), BigDecimal.valueOf(30),
+                "USD", "PEN",
+                BigDecimal.valueOf(0.32), LocalDateTime.now());
         var entities = Arrays.asList(entity1, entity2);
         var expected = Arrays.asList(currencyExchange1, currencyExchange2);
 
-        when(repository.findAll()).thenReturn(Flux.fromIterable(entities));
-        when(rateMapper.toDto(entity1)).thenReturn(currencyExchange1);
-        when(rateMapper.toDto(entity2)).thenReturn(currencyExchange2);
+        when(repository.findAll())
+                .thenReturn(Flux.fromIterable(entities));
+        when(rateMapper.toDto(entity1))
+                .thenReturn(currencyExchange1);
+        when(rateMapper.toDto(entity2))
+                .thenReturn(currencyExchange2);
 
         StepVerifier.create(dao.findAllCurrencyExchange())
                 .expectNextSequence(expected)
@@ -57,8 +67,14 @@ class CurrencyExchangeDAOImplTest {
     @Test
     void testSaveCurrencyExchange() {
 
-        var input = new CurrencyExchange(1, 1, BigDecimal.valueOf(100), BigDecimal.valueOf(30), "USD", "PEN", BigDecimal.valueOf(0.32), LocalDateTime.now());
-        var entity = new CurrencyExchangeEntity(1, 1, BigDecimal.valueOf(100), BigDecimal.valueOf(30), "USD", "PEN", BigDecimal.valueOf(0.32), LocalDateTime.now());
+        var input = new CurrencyExchange(1, 1,
+                BigDecimal.valueOf(100), BigDecimal.valueOf(30),
+                "USD", "PEN",
+                BigDecimal.valueOf(0.32), LocalDateTime.now());
+        var entity = new CurrencyExchangeEntity(1, 1,
+                BigDecimal.valueOf(100), BigDecimal.valueOf(30),
+                "USD", "PEN",
+                BigDecimal.valueOf(0.32), LocalDateTime.now());
 
         when(rateMapper.toEntity(input)).thenReturn(entity);
         when(repository.save(entity)).thenReturn(Mono.just(entity));

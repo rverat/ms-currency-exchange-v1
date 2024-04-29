@@ -24,8 +24,14 @@ public class AuthenticationFilter implements WebFilter {
         log.info("AuthenticationFilter:: filter:: reached {}", System.currentTimeMillis());
 
         return ReactiveSecurityContextHolder.getContext()
-                .map(securityContext -> (AuthenticationTokenData) securityContext.getAuthentication().getPrincipal())
-                .defaultIfEmpty(AuthenticationTokenData.builder().build())
+                .map(securityContext ->
+                        (AuthenticationTokenData) securityContext
+                                .getAuthentication()
+                                .getPrincipal())
+                .defaultIfEmpty(AuthenticationTokenData
+                        .builder()
+                        .build()
+                )
                 .flatMap(token -> {
                     if (token.getUserAudience() != null) {
                         return chain.filter(exchange);

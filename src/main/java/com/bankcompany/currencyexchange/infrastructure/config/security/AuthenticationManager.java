@@ -47,14 +47,16 @@ public class AuthenticationManager implements ReactiveAuthenticationManager {
 
     private Mono<AuthenticationTokenData> verifyToken(String token) {
         return tokenService.verifyToken(token)
-                .filter(decodedJWT -> decodedJWT.getAudience() != null && !decodedJWT.getAudience().isEmpty())
+                .filter(decodedJWT -> decodedJWT.getAudience() != null
+                        && !decodedJWT.getAudience().isEmpty())
                 .flatMap(tokenData -> getUser(tokenData, token));
     }
 
     private Mono<AuthenticationTokenData> getUser(DecodedJWT decodedJWT, String token) {
         return Mono.just(AuthenticationTokenData.builder()
                 .userAudience(decodedJWT.getAudience().get(0))
-                .userName(decodedJWT.getClaim(JwtUtility.TOKEN_CLAIM_USER).asString())
+                .userName(decodedJWT.getClaim(
+                        JwtUtility.TOKEN_CLAIM_USER).asString())
                 .token(token)
                 .build()
         );

@@ -21,19 +21,22 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class CurrencyConversionControllerTest {
+class CurrencyExchangeControllerTest {
 
     @Mock
     private CurrencyExchangeService exchangeService;
     @InjectMocks
-    private CurrencyConversionController controller;
+    private CurrencyExchangeController controller;
 
     @Test
     void testConvertCurrency() {
 
-        var requestDto = new ExchangeRateRequestDto(1, BigDecimal.valueOf(100.54), "USD", "PEN");
-        var expectedResult = new CurrencyExchangeDto(1, 1, BigDecimal.valueOf(100.54), BigDecimal.valueOf(376.91983516),
-                "USD", "PEN", BigDecimal.valueOf(3.748954), LocalDateTime.now());
+        var requestDto = new ExchangeRateRequestDto(1, BigDecimal.valueOf(100.54),
+                "USD", "PEN");
+        var expectedResult = new CurrencyExchangeDto(1, 1,
+                BigDecimal.valueOf(100.54), BigDecimal.valueOf(376.91983516),
+                "USD", "PEN",
+                BigDecimal.valueOf(3.748954), LocalDateTime.now());
 
         when(exchangeService.applyExchangeRate(any(ExchangeRateRequestDto.class)))
                 .thenReturn(Mono.just(expectedResult));
@@ -42,11 +45,12 @@ class CurrencyConversionControllerTest {
                 .bindToController(controller)
                 .build()
                 .post()
-                .uri("/currency-conversion/applyConvertion")
+                .uri("/api/v1/currency-exchange/apply")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(requestDto)
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBody(CurrencyExchangeDto.class)
                 .isEqualTo(expectedResult);
     }
@@ -54,10 +58,14 @@ class CurrencyConversionControllerTest {
     @Test
     void testGetAllTransaction() {
         var expectedResult = Arrays.asList(
-                new CurrencyExchangeDto(1, 1, BigDecimal.valueOf(100.54), BigDecimal.valueOf(376.91983516),
-                        "USD", "PEN", BigDecimal.valueOf(3.748954), LocalDateTime.now()),
-                new CurrencyExchangeDto(2, 1, BigDecimal.valueOf(100.54), BigDecimal.valueOf(376.91983516),
-                        "USD", "PEN", BigDecimal.valueOf(3.748954), LocalDateTime.now())
+                new CurrencyExchangeDto(1, 1,
+                        BigDecimal.valueOf(100.54), BigDecimal.valueOf(376.91983516),
+                        "USD", "PEN",
+                        BigDecimal.valueOf(3.748954), LocalDateTime.now()),
+                new CurrencyExchangeDto(2, 1,
+                        BigDecimal.valueOf(100.54), BigDecimal.valueOf(376.91983516),
+                        "USD", "PEN",
+                        BigDecimal.valueOf(3.748954), LocalDateTime.now())
         );
 
         when(exchangeService.getAllMovementExchangeRate())
@@ -67,9 +75,10 @@ class CurrencyConversionControllerTest {
                 .bindToController(controller)
                 .build()
                 .get()
-                .uri("/currency-conversion/convertions")
+                .uri("/api/v1/currency-exchange/getAll")
                 .exchange()
-                .expectStatus().isOk()
+                .expectStatus()
+                .isOk()
                 .expectBodyList(CurrencyExchangeDto.class)
                 .isEqualTo(expectedResult);
     }

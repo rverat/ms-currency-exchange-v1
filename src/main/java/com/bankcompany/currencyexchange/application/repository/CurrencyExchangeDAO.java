@@ -1,4 +1,4 @@
-package com.bankcompany.currencyexchange.application.dao;
+package com.bankcompany.currencyexchange.application.repository;
 
 import com.bankcompany.currencyexchange.domain.model.CurrencyExchange;
 import reactor.core.publisher.Flux;
